@@ -1,0 +1,89 @@
+01example
+#!/bin/sh
+#this is to show what a example looks like.
+echo "our first example"
+echo #This inserts an empty line in output.
+echo "We are currently in the following directory"
+/bin/pwd
+echo
+echo "This directory contains the following files"
+/bin/ls 
+----------------------------------------------------
+02sysinfo.sh
+#!/bin/sh
+#auto mail for system info
+
+/bin/date +%F >>/tmp/sysinfo
+echo "disk info:" >>/tmp/sysinfo
+/bin/df -h >>/tmp/sysinfo
+echo "online users" >>/tmp/sysinfo
+/usr/bin/who | /bin/grep -v root >>/tmp/sysinfo
+echo >>/tmp/sysinfo
+echo "memory info:" >>/tmp/sysinfo
+/usr/bin/free -m >>/tmp/sysinfo
+echo >> /tmp/sysinfo
+
+#write root
+/usr/bin/write root < /tmp/sysinfo && /bin/rm /tmp/sysinfo
+
+#crontab -e
+#0 9 * * 1-5 script
+-------------------------------------------------------
+echo $PATH $LANG $SHELL $PS1
+set 查看系统变量设置
+unset
+$* 这个程序的所有参数
+$# 这个程序的参数个数
+$$ 这个程序的PID
+$! 执行上一个后台命令的PID
+$? 执行上一个命令的返回值 0 非0（上一个命令执行不成功）
+_______________________________________________________
+03autobak.sh
+DATE='/bin/date +%Y%m%d'
+/bin/tar -cf /backup/$1.$DATE.tar $1 > /dev/null 2>> /backup/$1.bak.log
+/bin/gzip /backup/$1.$DATE.tar
+if [$？ -eq 0]
+then 
+	echo "$1 $DATE backup successfully" >> /backup/$1.bak.log
+else
+	echo "ERROR: Failure $1 $DATE backup!" >> /backup/$1.bak.log
+fi
+
+#crontab 0 3 * * 2,5 script
+eg:
+crontab -e
+0 3 * * 2,5 /bin/sh /shell/shell.example/autobak.sh /etc
+0 3 * * 2,5 /bin/sh /shell/shell.example/autobak.sh /root
+------------------------------------------------------------
+04special.var
+#!/bin/sh
+#test special variable
+#usage: sh special.var file01 file02
+
+echo '$# is' $#
+echo '$* is' $*
+echo '$? is' $?
+echo '$$ is' $$
+echo '$0 is' $0
+echo '$2 is' $2
+--------------------------------------
+05read
+#!/bin/sh
+read first second third
+echo "The frist parameter is $first"
+echo "The decond parameter is $second"
+echo "The third parameter is $third"
+-------------------------------------
+06expr
+#!/bin/sh
+a=10
+b=20
+c=30
+value1='expr $a + $b +$c'
+echo "The value of value1 is $value1"
+value2='expr $c / $b'
+echo "The value of value2 is $value2"
+value3='expr $c \* $b'
+echo "The value of value3 is $value3"
+value4='expr $a + $c / $b'
+echo "The value of value4 is $vaue4"
