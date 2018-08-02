@@ -38,6 +38,55 @@ $$ 这个程序的PID
 $! 执行上一个后台命令的PID
 $? 执行上一个命令的返回值 0 非0（上一个命令执行不成功）
 _______________________________________________________
+03autobak.sh
+DATE='/bin/date +%Y%m%d'
+/bin/tar -cf /backup/$1.$DATE.tar $1 > /dev/null 2>> /backup/$1.bak.log
+/bin/gzip /backup/$1.$DATE.tar
+if [$？ -eq 0]
+then 
+	echo "$1 $DATE backup successfully" >> /backup/$1.bak.log
+else
+	echo "ERROR: Failure $1 $DATE backup!" >> /backup/$1.bak.log
+fi
+
+#crontab 0 3 * * 2,5 script
+eg:
+crontab -e
+0 3 * * 2,5 /bin/sh /shell/shell.example/autobak.sh /etc
+0 3 * * 2,5 /bin/sh /shell/shell.example/autobak.sh /root
+------------------------------------------------------------
+04special.var
+#!/bin/sh
+#test special variable
+#usage: sh special.var file01 file02
+
+echo '$# is' $#
+echo '$* is' $*
+echo '$? is' $?
+echo '$$ is' $$
+echo '$0 is' $0
+echo '$2 is' $2
+--------------------------------------
+05read
+#!/bin/sh
+read first second third
+echo "The frist parameter is $first"
+echo "The decond parameter is $second"
+echo "The third parameter is $third"
+-------------------------------------
+06expr
+#!/bin/sh
+a=10
+b=20
+c=30
+value1='expr $a + $b +$c'
+echo "The value of value1 is $value1"
+value2='expr $c / $b'
+echo "The value of value2 is $value2"
+value3='expr $c \* $b'
+echo "The value of value3 is $value3"
+value4='expr $a + $c / $b'
+echo "The value of value4 is $vaue4"
 --------------------------------------------------------------------------
 	 07test.apache
 	 #!/bin/bash
@@ -204,56 +253,5 @@ case $var in
 	*) echo "input error..."
 esac
 ----------------------------------------------------------------------
-
-
-03autobak.sh
-DATE='/bin/date +%Y%m%d'
-/bin/tar -cf /backup/$1.$DATE.tar $1 > /dev/null 2>> /backup/$1.bak.log
-/bin/gzip /backup/$1.$DATE.tar
-if [$？ -eq 0]
-then 
-	echo "$1 $DATE backup successfully" >> /backup/$1.bak.log
-else
-	echo "ERROR: Failure $1 $DATE backup!" >> /backup/$1.bak.log
-fi
-
-#crontab 0 3 * * 2,5 script
-eg:
-crontab -e
-0 3 * * 2,5 /bin/sh /shell/shell.example/autobak.sh /etc
-0 3 * * 2,5 /bin/sh /shell/shell.example/autobak.sh /root
-------------------------------------------------------------
-04special.var
-#!/bin/sh
-#test special variable
-#usage: sh special.var file01 file02
-
-echo '$# is' $#
-echo '$* is' $*
-echo '$? is' $?
-echo '$$ is' $$
-echo '$0 is' $0
-echo '$2 is' $2
---------------------------------------
-05read
-#!/bin/sh
-read first second third
-echo "The frist parameter is $first"
-echo "The decond parameter is $second"
-echo "The third parameter is $third"
--------------------------------------
-06expr
-#!/bin/sh
-a=10
-b=20
-c=30
-value1='expr $a + $b +$c'
-echo "The value of value1 is $value1"
-value2='expr $c / $b'
-echo "The value of value2 is $value2"
-value3='expr $c \* $b'
-echo "The value of value3 is $value3"
-value4='expr $a + $c / $b'
-echo "The value of value4 is $vaue4"
 
 
