@@ -38,6 +38,174 @@ $$ 这个程序的PID
 $! 执行上一个后台命令的PID
 $? 执行上一个命令的返回值 0 非0（上一个命令执行不成功）
 _______________________________________________________
+--------------------------------------------------------------------------
+	 07test.apache
+	 #!/bin/bash
+	 #“if...else" usage
+	 #"Using this program to show your system's services"
+	 
+	 echo "Now,the web service of this linux system will be detect..."
+	 echo
+	 
+	 #detect www service
+	   web='/usr/bin/pgrep httpd'
+	   if ["$web" != ""]
+	   then 
+			echo "The web service is running."
+		else
+			echo "The web service is not running."
+			/etc/rc.d/init.d/httpd start
+		fi
+------------------------------------------------------------------------
+08if_else
+#!/bin/sh
+
+echo "please input a file name:"
+read file_name
+if [ -d $file_name ]
+	then
+		echo "$file_name is a directory"
+elif [ -f $file_name ]
+	then 
+		echo "$file_name is a common file"
+elif [ -c $file_name -o -b $file_name ]
+	then
+		echo "$file_name is a device file"
+else
+	echo "$file_name is an unknown file"
+fi
+
+ls -l /dev/sda
+ls -l /dev/tty
+---------------------------------------------------------------------------
+09test.sh
+#!/bin/sh
+if [ $# -eq 2 ] then
+	echo "Not enough parameters"
+	exit 0   #退出程序执行，并返回一个返回码，返回码为0表示正常退出，非0表示非正常退出
+fi
+if [ $1 -eq $2 ] then
+	echo "$1 equals $2"
+elif [$1 -lt $2 ]
+	echo "$1 littler than $2"
+elif [$1 -gt $2 ]
+	echo "$1 greater than $2"
+fi
+-----------------------------------------------------------------------------
+10for
+#!/bin/sh
+for Day in Sunday Monday Tuesday Wednesday Thursday Friday Saturday
+do
+	echo "The day is : $Day"
+done
+-----------------------------------------------------------------------------
+11killuser.sh
+#!/bin/bash
+#The script to kill logined users.
+
+username=$1
+/bin/ps aux | /bin/grep $username | /bin/awk '{ print $2 }' > /tmp/tmp.pid
+killid='cat /tmp/tem.pid'
+for PID in $killid
+do
+	/bin/kill -9 $PID 2> /dev/null
+done
+----------------------------------------------------------------------------
+11userinfo.sh
+#!/bin/sh
+read username
+/bin/grep $username /etc/passwd > dev/null 2> dev/null
+if [$? -eq 0 ]
+then 
+	/bin/echo "username is $username"
+else
+	/bin/echo "user $username does not exit"
+fi
+/bin/echo
+
+#list /etc/passwd info
+userinfo='/bin/grep ^$username:x /etc/passwd'
+userid='/bin/echo $userinfo | /bin/awk -F: '{print $3}''
+groupid='/bin/echo $userinfo | /bin/awk -F: '{print $4}''
+homedir='/bin/echo $userinfo | /bin/awk -F: '{print $6}''
+shell='/bin/echo $userinfo | /bin/awk -F: '{print $7}''
+
+#list get group name from GID
+grouptmpname='cat /etc/group | /bin/grep :x:$groupid'
+groupname='/bin/echo $grouptmpname | /bin/awk -F: '{print $1}''
+/bin/echo "user id is : $userid"
+/bin/echo "default group is : $groupname"
+/bin/echo "homdir is :$homedir"
+/bin/echo "shell is : $shell"
+/bin/echo "group members info:"
+
+#get group members
+groups='/usr/bin/groups $username'
+/bin/echo $groups
+/bin/echo
+#get login info
+userlogin='/usr/bin/who | /bin/grep $username'
+if [ "$userlogin != ""]
+then
+	/bin/echo "$username is online"
+else 
+	/bin/echo "$username not logged in"
+fi
+---------------------------------------------------------
+12select
+#!/bin/sh
+#"select" usage
+
+echo "what is your favourite OS?"
+select var in "Linux" "UNIX" "Windows" "Others"
+do
+	break
+done
+echo "you have selected $var"
+-----------------------------------------------------------
+13case
+#!/bin/sh
+echo "*********************************"
+echo "Please select your operation:"
+echo "Press "C" to Copy"
+echo "Press "D" to delete"
+ehco "Press "B" to backup"
+ehco "**********************************"
+read op
+case $op in
+	C)
+		echo "your selection is Copy."
+	;;
+	D)
+		echo "your selection is Delete."
+	;;
+	B)
+		echo "your selection is Backup."
+	;;
+	*)
+		ehco "incalide selection"
+esac
+---------------------------------------------------------------------
+14select.case
+#!/bin/sh
+# "select" "case" usage
+echo "a is 5,b is 3,Please select your method:"
+a=5
+b=3
+select var in "a+b" "a-b" "a*b" "a/b"
+do
+	break
+done
+case $var in 
+	"a+b") echo 'a+b='`expr $a "+" $b`;;
+	"a-b") echo 'a-b='`expr $a "-" $b`;;
+	"a*b") echo 'a*b='`expr $a "*" $b`;;
+	"a/b") echo 'a/b='`expr $a "/" $b`;;
+	*) echo "input error..."
+esac
+----------------------------------------------------------------------
+
+
 03autobak.sh
 DATE='/bin/date +%Y%m%d'
 /bin/tar -cf /backup/$1.$DATE.tar $1 > /dev/null 2>> /backup/$1.bak.log
@@ -87,3 +255,5 @@ value3='expr $c \* $b'
 echo "The value of value3 is $value3"
 value4='expr $a + $c / $b'
 echo "The value of value4 is $vaue4"
+
+
