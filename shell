@@ -253,5 +253,90 @@ case $var in
 	*) echo "input error..."
 esac
 ----------------------------------------------------------------------
+15 while
+#!/bin/sh
+num=1
+while [$num -le 10]
+do
+	SUM=`expr $num \* $num`
+	echo $SUM
+	num=`expr $num + 1`
+done
+---------------------------------------
+16 useradd.sh
+#!/bin/sh
+#Author: Test
+#The script to add user
+#/etc/passwd info
+echo "please input username:"
+read name
+echo "please input number:"
+read num
+n=1
+while [$n -le $num]
+do
+	/usr/sbin/useradd $name$n
+	n=`expr $n + 1`
+done
+#/etc/shadow info
+echo "please input the password:"
+read passwd
+m=1
+while [$m -le $num ]
+do 
+	echo $passwd | /usr/bin/passwd ==stdin $name$m >/dev/null
+	m=`expr $m +1`
+done
+------------------------------------------------------
+17 read.until
+#!/bin/sh
+#"read" "until" usage
+echo "Press Y/y to stop..."
+read input
+until ["$input" = "Y"] || ["$input" = "y"] #until 条件为假时执行循环
+do 
+	echo "error input,please try again..."
+	read input
+done
 
+echo "Stop here!"
+-----------------------------------------------------
+break 跳出整个循环 
+continue 跳过本次循环，进行下次循环
+-----------------------------------------------------
+18shift参数左移
+#!/bin/sh
+if [$# -le 0]
+then 
+	echo "Not enough parameters"
+	exit 0
+fi
+sum=0
+while [ $# -gt 0 ]
+do
+	sum=`expr $sum + $1`
+	shift
+done
+echo $sum
+-----------------------------------------------------
+函数
+vi /etc/rc.d/init.d/httpd
+sh -x script
+sh -n script 不执行，检查语法
+-------------------------------------------------------
+19 setuid.sh
+#!/bin/sh
+# After the system installed,please check setuid files first for security.
+#mkdir /backup
+#find / -perm -4000 -o -perm -2000 > /backup/setuid.list
+/usr/bin/find /-perm -4000 -o -perm -2000 > /tmp/setuid.check 2> /dev/null
+for file in `/bin/cat /tmp/setuid.check`
+do 
+	/bin/grep $file /backup/setuid.list > /dev/null
+	if ["#?" !=  "0" ]
+	then
+		echo "$file isn't in list! It's danger!"
+	fi
+done
+/bin/rm /tmp/setuid.check
 
